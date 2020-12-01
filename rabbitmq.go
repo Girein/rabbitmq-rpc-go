@@ -92,3 +92,39 @@ func NewRPCRequest(connection *Connection, body Payload) (string, string, interf
 
 	return response["status"].(string), response["message"].(string), response["data"]
 }
+
+// SendMessage sends message to the consumer
+func SendMessage(connection *Connection, body Payload) {
+	url := connection.Host + ":" + connection.Port + "/" + connection.VirtualHost
+
+	log.Println("AMQP" + " " + url + " | " + connection.QueueName)
+
+	amqpConnection, err := amqp.Dial("amqp://" + connection.Username + ":" + connection.Password + "@" + url)
+	helpers.LogIfError(err, "Failed to connect to RabbitMQ")
+	defer amqpConnection.Close()
+
+	channel, err := amqpConnection.Channel()
+	helpers.LogIfError(err, "Failed to open a channel in RabbitMQ")
+	defer channel.Close()
+
+	queue, err := channel.QueueDeclare(
+		connection.QueueName, // name
+		false,                // durable
+		false,                // delete when unused
+		false,                // exclusive
+		false,                // noWait
+		nil,                  // arguments
+	)
+	helpers.LogIfError(err, "Failed to declare a queue in RabbitMQ")
+
+	err = channel.Publish(
+		"",         // exchange
+		queue.Name, // routing key
+		false,      // mandatory
+		false,      // immediate
+		amqp.Publishing{
+			ContentType: "text/plain",
+			Body:        []byte(helpers.JSONEncode(body)),
+		})
+	helpers.LogIfError(err, "Failed to publish a message in RabbitMQ")
+}
