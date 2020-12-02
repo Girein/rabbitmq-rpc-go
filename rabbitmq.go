@@ -49,7 +49,7 @@ func NewRPCRequest(connection *Connection, body map[string]interface{}) map[stri
 
 	queue, err := channel.QueueDeclare(
 		connection.QueueName, // name
-		false,                // durable
+		true,                 // durable
 		false,                // delete when unused
 		false,                // exclusive
 		false,                // noWait
