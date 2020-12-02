@@ -109,7 +109,7 @@ func SendMessage(connection *Connection, body map[string]interface{}) {
 
 	queue, err := channel.QueueDeclare(
 		connection.QueueName, // name
-		false,                // durable
+		true,                 // durable
 		false,                // delete when unused
 		false,                // exclusive
 		false,                // noWait
