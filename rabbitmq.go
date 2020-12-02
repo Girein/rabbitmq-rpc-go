@@ -34,7 +34,7 @@ func (connection *Connection) New(serviceName string) {
 }
 
 // NewRPCRequest sends message to the RPC worker
-func NewRPCRequest(connection *Connection, body Payload) (string, string, interface{}) {
+func NewRPCRequest(connection *Connection, body map[string]interface{}) map[string]interface{} {
 	url := connection.Host + ":" + connection.Port + "/" + connection.VirtualHost
 
 	log.Println("AMQP" + " " + url + " | " + connection.QueueName)
@@ -90,7 +90,7 @@ func NewRPCRequest(connection *Connection, body Payload) (string, string, interf
 		}
 	}
 
-	return response["status"].(string), response["message"].(string), response["data"]
+	return response
 }
 
 // SendMessage sends message to the consumer
