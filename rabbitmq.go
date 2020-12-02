@@ -94,7 +94,7 @@ func NewRPCRequest(connection *Connection, body Payload) (string, string, interf
 }
 
 // SendMessage sends message to the consumer
-func SendMessage(connection *Connection, body Payload) {
+func SendMessage(connection *Connection, body map[string]interface{}) {
 	url := connection.Host + ":" + connection.Port + "/" + connection.VirtualHost
 
 	log.Println("AMQP" + " " + url + " | " + connection.QueueName)
