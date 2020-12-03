@@ -27,8 +27,8 @@ type Connection struct {
 func (connection *Connection) New(serviceName string) {
 	connection.Host = os.Getenv("RABBITMQ_HOST")
 	connection.Port = os.Getenv("RABBITMQ_PORT")
-	connection.Username = os.Getenv("RABBITMQ_USERNAME")
-	connection.Password = os.Getenv("RABBITMQ_PASSWORD")
+	connection.Username = os.Getenv("RABBITMQ_USERNAME_" + serviceName)
+	connection.Password = os.Getenv("RABBITMQ_PASSWORD_" + serviceName)
 	connection.VirtualHost = os.Getenv("RABBITMQ_VHOST_" + serviceName)
 	connection.QueueName = os.Getenv("RABBITMQ_QUEUE_" + serviceName)
 }
