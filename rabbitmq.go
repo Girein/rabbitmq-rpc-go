@@ -80,6 +80,7 @@ func NewRPCRequest(connection *Connection, body map[string]interface{}) map[stri
 			CorrelationId: correlationID,
 			ReplyTo:       queue.Name,
 			Body:          []byte(helpers.JSONEncode(body)),
+			Expiration:    "60000",
 		})
 	helpers.LogIfError(err, "Failed to publish a message in RabbitMQ")
 
@@ -125,6 +126,7 @@ func SendMessage(connection *Connection, body map[string]interface{}) {
 		amqp.Publishing{
 			ContentType: "text/plain",
 			Body:        []byte(helpers.JSONEncode(body)),
+			Expiration:  "60000",
 		})
 	helpers.LogIfError(err, "Failed to publish a message in RabbitMQ")
 }
