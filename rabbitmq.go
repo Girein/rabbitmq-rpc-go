@@ -24,13 +24,13 @@ type Connection struct {
 }
 
 // New set the RabbitMQ Connection
-func (connection *Connection) New(serviceName string) {
+func (connection *Connection) New(serviceName string, queueName string) {
 	connection.Host = os.Getenv("RABBITMQ_HOST")
 	connection.Port = os.Getenv("RABBITMQ_PORT")
 	connection.Username = os.Getenv("RABBITMQ_USERNAME_" + serviceName)
 	connection.Password = os.Getenv("RABBITMQ_PASSWORD_" + serviceName)
 	connection.VirtualHost = os.Getenv("RABBITMQ_VHOST_" + serviceName)
-	connection.QueueName = os.Getenv("RABBITMQ_QUEUE_" + serviceName)
+	connection.QueueName = queueName
 }
 
 // NewRPCRequest sends message to the RPC worker
@@ -49,8 +49,8 @@ func NewRPCRequest(connection *Connection, body map[string]interface{}) map[stri
 
 	queue, err := channel.QueueDeclare(
 		connection.QueueName, // name
-		true,                 // durable
-		false,                // delete when unused
+		false,                // durable
+		true,                 // delete when unused
 		false,                // exclusive
 		false,                // noWait
 		nil,                  // arguments
@@ -110,8 +110,8 @@ func SendMessage(connection *Connection, body map[string]interface{}) {
 
 	queue, err := channel.QueueDeclare(
 		connection.QueueName, // name
-		true,                 // durable
-		false,                // delete when unused
+		false,                // durable
+		true,                 // delete when unused
 		false,                // exclusive
 		false,                // noWait
 		nil,                  // arguments
