@@ -40,11 +40,17 @@ func NewRPCRequest(connection *Connection, body map[string]interface{}) map[stri
 	log.Println("AMQP" + " " + url + " | " + connection.QueueName)
 
 	amqpConnection, err := amqp.Dial("amqp://" + connection.Username + ":" + connection.Password + "@" + url)
-	helpers.LogIfError(err, "Failed to connect to RabbitMQ")
+	if err != nil {
+		helpers.LogIfError(err, "Failed to connect to RabbitMQ")
+		panic(err)
+	}
 	defer amqpConnection.Close()
 
 	channel, err := amqpConnection.Channel()
-	helpers.LogIfError(err, "Failed to open a channel in RabbitMQ")
+	if err != nil {
+		helpers.LogIfError(err, "Failed to open a channel in RabbitMQ")
+		panic(err)
+	}
 	defer channel.Close()
 
 	queue, err := channel.QueueDeclare(
@@ -55,7 +61,10 @@ func NewRPCRequest(connection *Connection, body map[string]interface{}) map[stri
 		false,                // noWait
 		nil,                  // arguments
 	)
-	helpers.LogIfError(err, "Failed to declare a queue in RabbitMQ")
+	if err != nil {
+		helpers.LogIfError(err, "Failed to declare a queue in RabbitMQ")
+		panic(err)
+	}
 
 	messages, err := channel.Consume(
 		queue.Name, // queue
@@ -66,7 +75,10 @@ func NewRPCRequest(connection *Connection, body map[string]interface{}) map[stri
 		false,      // no-wait
 		nil,        // args
 	)
-	helpers.LogIfError(err, "Failed to register a consumer in RabbitMQ")
+	if err != nil {
+		helpers.LogIfError(err, "Failed to register a consumer in RabbitMQ")
+		panic(err)
+	}
 
 	correlationID := helpers.RandomString(32)
 
@@ -82,7 +94,10 @@ func NewRPCRequest(connection *Connection, body map[string]interface{}) map[stri
 			Body:          []byte(helpers.JSONEncode(body)),
 			Expiration:    "60000",
 		})
-	helpers.LogIfError(err, "Failed to publish a message in RabbitMQ")
+	if err != nil {
+		helpers.LogIfError(err, "Failed to publish a message in RabbitMQ")
+		panic(err)
+	}
 
 	for data := range messages {
 		if correlationID == data.CorrelationId {
@@ -101,11 +116,17 @@ func SendMessage(connection *Connection, body map[string]interface{}) {
 	log.Println("AMQP" + " " + url + " | " + connection.QueueName)
 
 	amqpConnection, err := amqp.Dial("amqp://" + connection.Username + ":" + connection.Password + "@" + url)
-	helpers.LogIfError(err, "Failed to connect to RabbitMQ")
+	if err != nil {
+		helpers.LogIfError(err, "Failed to connect to RabbitMQ")
+		panic(err)
+	}
 	defer amqpConnection.Close()
 
 	channel, err := amqpConnection.Channel()
-	helpers.LogIfError(err, "Failed to open a channel in RabbitMQ")
+	if err != nil {
+		helpers.LogIfError(err, "Failed to open a channel in RabbitMQ")
+		panic(err)
+	}
 	defer channel.Close()
 
 	queue, err := channel.QueueDeclare(
@@ -116,7 +137,10 @@ func SendMessage(connection *Connection, body map[string]interface{}) {
 		false,                // noWait
 		nil,                  // arguments
 	)
-	helpers.LogIfError(err, "Failed to declare a queue in RabbitMQ")
+	if err != nil {
+		helpers.LogIfError(err, "Failed to declare a queue in RabbitMQ")
+		panic(err)
+	}
 
 	err = channel.Publish(
 		"",         // exchange
@@ -128,5 +152,8 @@ func SendMessage(connection *Connection, body map[string]interface{}) {
 			Body:        []byte(helpers.JSONEncode(body)),
 			Expiration:  "60000",
 		})
-	helpers.LogIfError(err, "Failed to publish a message in RabbitMQ")
+	if err != nil {
+		helpers.LogIfError(err, "Failed to publish a message in RabbitMQ")
+		panic(err)
+	}
 }
