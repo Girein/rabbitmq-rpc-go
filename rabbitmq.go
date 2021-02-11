@@ -123,7 +123,7 @@ func NewRPCRequest(connection *Connection, body map[string]interface{}) (map[str
 	case result := <-flag:
 		log.Println(result)
 		return response, nil
-	case <-time.After(time.Duration(18) * time.Second):
+	case <-time.After(time.Duration(7) * time.Second):
 		return nil, errors.New("The response from the consumer took too long")
 	}
 }
