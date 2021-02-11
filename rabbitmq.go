@@ -49,11 +49,15 @@ func NewRPCRequest(connection *Connection, body map[string]interface{}) (map[str
 	}
 	defer amqpConnection.Close()
 
+	log.Println("1")
+
 	channel, err := amqpConnection.Channel()
 	if err != nil {
 		return nil, err
 	}
 	defer channel.Close()
+
+	log.Println("2")
 
 	queue, err := channel.QueueDeclare(
 		connection.QueueName, // name
@@ -67,6 +71,8 @@ func NewRPCRequest(connection *Connection, body map[string]interface{}) (map[str
 		return nil, err
 	}
 
+	log.Println("3")
+
 	messages, err := channel.Consume(
 		queue.Name, // queue
 		"",         // consumer
@@ -79,6 +85,8 @@ func NewRPCRequest(connection *Connection, body map[string]interface{}) (map[str
 	if err != nil {
 		return nil, err
 	}
+
+	log.Println("4")
 
 	correlationID := helpers.RandomString(32)
 
@@ -98,6 +106,8 @@ func NewRPCRequest(connection *Connection, body map[string]interface{}) (map[str
 		return nil, err
 	}
 
+	log.Println("5")
+
 	for data := range messages {
 		if correlationID == data.CorrelationId {
 			if messageBody == string(data.Body) {
@@ -108,6 +118,8 @@ func NewRPCRequest(connection *Connection, body map[string]interface{}) (map[str
 			break
 		}
 	}
+
+	log.Println("6")
 
 	select {
 	case <-time.After(time.Duration(18) * time.Second):
