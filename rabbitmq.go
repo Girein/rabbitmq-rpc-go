@@ -100,23 +100,29 @@ func NewRPCRequest(connection *Connection, body map[string]interface{}) (map[str
 
 	flag := make(chan string, 1)
 
-	for data := range messages {
-		if correlationID == data.CorrelationId {
-			if messageBody == string(data.Body) {
-				return nil, errors.New("The consumer is not responding")
-			}
+	go func() {
+		for data := range messages {
+			if correlationID == data.CorrelationId {
+				if messageBody == string(data.Body) {
+					err = errors.New("The consumer is not responding")
+				}
 
-			json.Unmarshal([]byte(string(data.Body)), &response)
-			break
+				json.Unmarshal([]byte(string(data.Body)), &response)
+				break
+			}
 		}
+
+		flag <- "Message => successfully to get a response from rabbitmq."
+	}()
+	if err != nil {
+		return nil, err
 	}
 
-	flag <- "Message => successfully to get a response from rabbitmq."
-
 	select {
-	case <-flag:
+	case result := <-flag:
+		log.Println(result)
 		return response, nil
-	case <-time.After(time.Duration(18) * time.Second):
+	case <-time.After(time.Duration(5) * time.Second):
 		return nil, errors.New("The response from the consumer took too long")
 	}
 }
