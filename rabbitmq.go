@@ -13,13 +13,6 @@ import (
 
 var response map[string]interface{}
 
-// Payload RabbitMQ
-type Payload struct {
-	Route string      `json:"route"`
-	Param interface{} `json:"param"`
-	Data  interface{} `json:"data"`
-}
-
 // Connection RabbitMQ
 type Connection struct {
 	Host, Port, Username, Password, VirtualHost, QueueName string
@@ -98,13 +91,14 @@ func NewRPCRequest(connection *Connection, body map[string]interface{}) (map[str
 		return nil, err
 	}
 
-	flag := make(chan string, 1)
+	flag := make(chan string)
+	defer close(flag)
 
 	go func() {
 		for data := range messages {
 			if correlationID == data.CorrelationId {
 				if messageBody == string(data.Body) {
-					err = errors.New("The consumer is not responding")
+					err = errors.New("the consumer is not responding")
 				} else {
 					json.Unmarshal([]byte(string(data.Body)), &response)
 				}
@@ -115,16 +109,13 @@ func NewRPCRequest(connection *Connection, body map[string]interface{}) (map[str
 
 		flag <- "Successfully to get a response from the consumer"
 	}()
-	if err != nil {
-		return nil, err
-	}
 
 	select {
 	case result := <-flag:
 		log.Println(result)
 		return response, nil
 	case <-time.After(time.Duration(7) * time.Second):
-		return nil, errors.New("The response from the consumer took too long")
+		return nil, errors.New("the response from the consumer took too long")
 	}
 }
 
