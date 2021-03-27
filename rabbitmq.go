@@ -92,7 +92,6 @@ func NewRPCRequest(connection *Connection, body map[string]interface{}) (map[str
 	}
 
 	flag := make(chan string)
-	defer close(flag)
 
 	go func() {
 		for data := range messages {
