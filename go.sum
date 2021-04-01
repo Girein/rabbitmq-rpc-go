@@ -1,9 +1,7 @@
-github.com/Girein/helpers-go v1.0.4 h1:pC0/Ns1T5oyuFEVcpKoXiAw3T+H7bBZwiLWu7Qi5+Ak=
-github.com/Girein/helpers-go v1.0.4/go.mod h1:e6sz1HSvSIUWjMrtpP59CvPKOtRyPcsgRUWyKqIaPZs=
-github.com/Girein/helpers-go v1.0.5 h1:4rPgCJ6d3taee/elo7TeyZu0dMy0vDgOOi6+Qu8uPow=
-github.com/Girein/helpers-go v1.0.5/go.mod h1:e6sz1HSvSIUWjMrtpP59CvPKOtRyPcsgRUWyKqIaPZs=
-github.com/Girein/slack-incoming-webhook-go v1.0.0 h1:EtdJjcH077b2aCIEUH4UIsMuqqoZw9s4X/aCkqqOx1o=
-github.com/Girein/slack-incoming-webhook-go v1.0.0/go.mod h1:NYRKEy7FXiLR73n4LTHk0yBrgIyFOwkgVZRTMmwBTBA=
+github.com/Girein/helpers-go v1.1.1 h1:NdCwvsn7QUW5yl6SYgUg3ugZYclJ0Y4ifFeNtIo7Kyo=
+github.com/Girein/helpers-go v1.1.1/go.mod h1:y57yS5rGu7EKAi2KR9L93szxyP2Fgn9vp+aCtCWIrFw=
+github.com/Girein/slack-incoming-webhook-go v1.1.0 h1:CB/7ebUIPYWmFNgxjEHwOwvhAJJE+OG5Z3w1WJkmiWw=
+github.com/Girein/slack-incoming-webhook-go v1.1.0/go.mod h1:NYRKEy7FXiLR73n4LTHk0yBrgIyFOwkgVZRTMmwBTBA=
 github.com/PuerkitoBio/goquery v1.5.1/go.mod h1:GsLWisAFVj4WgDibEWF4pvYnkVQBpKBKeU+7zCJoLcc=
 github.com/andybalholm/cascadia v1.1.0/go.mod h1:GsXiBklL0woXo1j/WYWtSYYC4ouU9PqHO0sqidkEA4Y=
 github.com/denisenkom/go-mssqldb v0.0.0-20191124224453-732737034ffd h1:83Wprp6ROGeiHFAP8WJdI2RoxALQYgdllERc3N5N2DM=

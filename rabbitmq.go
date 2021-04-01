@@ -30,7 +30,10 @@ func (connection *Connection) New(serviceName string) {
 
 // NewRPCRequest sends message to the RPC worker
 func NewRPCRequest(connection *Connection, body map[string]interface{}) (map[string]interface{}, error) {
-	messageBody := helpers.JSONEncode(body)
+	messageBody, err := helpers.JSONEncode(body)
+	if err != nil {
+		return nil, err
+	}
 
 	url := connection.Host + ":" + connection.Port + "/" + connection.VirtualHost
 
@@ -120,6 +123,11 @@ func NewRPCRequest(connection *Connection, body map[string]interface{}) (map[str
 
 // SendMessage sends message to the consumer
 func SendMessage(connection *Connection, body map[string]interface{}) error {
+	messageBody, err := helpers.JSONEncode(body)
+	if err != nil {
+		return err
+	}
+
 	url := connection.Host + ":" + connection.Port + "/" + connection.VirtualHost
 
 	log.Println("AMQP" + " " + url + " | " + connection.QueueName)
@@ -155,7 +163,7 @@ func SendMessage(connection *Connection, body map[string]interface{}) error {
 		false,      // immediate
 		amqp.Publishing{
 			ContentType: "text/plain",
-			Body:        []byte(helpers.JSONEncode(body)),
+			Body:        []byte(messageBody),
 			Expiration:  "60000",
 		})
 	if err != nil {
